@@ -7,4 +7,3 @@
 - Convert seconds into more useful measurement
 - Make window look nicer
 - Make tracking system more accurate
-- Clean up repo so there isn't loads of junk

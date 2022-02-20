@@ -1,1 +1,0 @@
-/home/luke/code/c++/winfoc/winfoc.pro
