@@ -1,3 +1,5 @@
+# winfoc v0.8
+
 Welcome to **winfoc**, an open source program to track how long a window has been focused for.
 
 The binary can be found in the "release" folder in the form of a ".exe" file.

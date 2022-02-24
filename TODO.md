@@ -1,9 +1,12 @@
 # TODO
 
-- Simplify code and fix stuff that doesn't make sense
-- Add documentation
-- Make sure the program works even in unusual situations
-- Convert seconds into more useful measurement
-- Make window look nicer
-- Make tracking system more accurate
-- add readme & compiling instructions
+- Cleaning
+ - Simplify code
+ - Fix jank code
+ - Check for dangerous code
+ - Add documentation
+- Quality of Life
+ - Provide for unusual situations
+ - More accurate times
+ - Make window look nicer
+ - Add re-detect applications button

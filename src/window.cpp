@@ -1,4 +1,5 @@
 #include "window.h"
+#include "tconvert.h"
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
@@ -7,6 +8,7 @@
 #include <vector>
 #include <windows.h>
 #include <QTimer>
+#include <string>
 
 using namespace std;
 
@@ -59,8 +61,11 @@ void Window::timerCheck() {
 		time += 1;
 	}
 	/*QString real = QString::number(realID);
-	QString active = QString::number(otherAID);*/
-	QString secs = QString::number(time);
-	information->setText(baseText + secs + " seconds");
-	//information->setText(real + " | " + active + " | " + secs);
+	QString active = QString::number(otherAID);
+	// QString secs = QString::number(time);
+	// information->setText(baseText + secs + " seconds");
+	// information->setText(real + " | " + active + " | " + secs);*/
+	string focTime;
+	tconvert(time, focTime);
+	information->setText(baseText + QString::fromStdString(focTime));
 }
