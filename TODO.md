@@ -10,7 +10,6 @@
  	- More accurate times
 		- Check only when a window becomes (un)focused
 		- Use system time instead of just counting every second
- 	- Make window look nicer
  	- Add re-detect applications button
 - Stress Test
 

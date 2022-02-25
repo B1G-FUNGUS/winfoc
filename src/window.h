@@ -23,6 +23,7 @@ class Window: public QWidget {
 		QString baseText;
 		vector<HWND> idList;
 		QLabel *information;
+		QLabel *focTimeLabel;
 		QPushButton *start_button;
 		QComboBox *selection;
 	private slots:

@@ -20,6 +20,10 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	information = new QLabel("Pick the window you want to track.", this);
 	information->setGeometry(QRect(10, 10, 480, 20));
 
+	focTimeLabel = new QLabel(this);
+	focTimeLabel->setGeometry(QRect(30, 10, 480, 20));
+	focTimeLabel->hide();
+
 	selection = new QComboBox(this);
 	selection->setGeometry(10, 30, 270, 30);
 
@@ -44,8 +48,11 @@ void Window::startTiming() {
 		winName.append("...");
 	}
 	baseText = winName + " has been focused for ";
+	information->setText(baseText);
 	start_button->hide();
 	selection->hide();
+	focTimeLabel->show();
+	focTimeLabel->setStyleSheet("font-weight: bold");
 	id = idList[selection->currentIndex()];
 	realID = GetWindowThreadProcessId(id, NULL);
 	QTimer *timer = new QTimer(this);
@@ -67,5 +74,5 @@ void Window::timerCheck() {
 	// information->setText(real + " | " + active + " | " + secs);*/
 	string focTime;
 	tconvert(time, focTime);
-	information->setText(baseText + QString::fromStdString(focTime));
+	focTimeLabel->setText(QString::fromStdString(focTime));
 }
