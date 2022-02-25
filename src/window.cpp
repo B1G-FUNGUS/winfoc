@@ -21,7 +21,7 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	information->setGeometry(QRect(10, 10, 480, 20));
 
 	focTimeLabel = new QLabel(this);
-	focTimeLabel->setGeometry(QRect(30, 10, 480, 20));
+	focTimeLabel->setGeometry(QRect(10, 30, 480, 20));
 	focTimeLabel->hide();
 
 	selection = new QComboBox(this);
@@ -43,11 +43,11 @@ void Window::addID(vector<HWND> ids) {
 
 void Window::startTiming() {
 	QString winName = selection->currentText();
-	if(winName.length() > 30) {
-		winName.truncate(27);
+	if(winName.length() > 25) {
+		winName.truncate(22);
 		winName.append("...");
 	}
-	baseText = winName + " has been focused for ";
+	baseText = "\"" + winName + "\"" + " has been focused for ";
 	information->setText(baseText);
 	start_button->hide();
 	selection->hide();
