@@ -5,12 +5,11 @@
  	- Fix jank code
  	- Check for dangerous code
  	- Add documentation
-- Quality of Life
  	- Provide for unusual situations
+- Quality of Life
  	- More accurate times
 		- Check only when a window becomes (un)focused
 		- Use system time instead of just counting every second
- 	- Add re-detect applications button
 - Stress Test
 
 # KNOWN ISSUES

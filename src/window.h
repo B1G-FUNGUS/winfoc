@@ -13,6 +13,7 @@ class QLabel;
 class Window: public QWidget {
 	Q_OBJECT
 	public:
+		vector<HWND> idList;
 		explicit Window(QWidget *parent = 0);
 		void addWin(QString winTitle);
 		void addID(vector<HWND> ids);
@@ -21,14 +22,16 @@ class Window: public QWidget {
 		HWND id;
 		DWORD realID;
 		QString baseText;
-		vector<HWND> idList;
 		QLabel *information;
 		QLabel *focTimeLabel;
 		QPushButton *start_button;
+		QPushButton *refresh_button;
 		QComboBox *selection;
+		// BOOL CALLBACK cecondListWins(HWND hWnd, LPARAM lparam);
 	private slots:
 		void startTiming();
 		void timerCheck();
+		void updateList();
 };
 
 #endif 

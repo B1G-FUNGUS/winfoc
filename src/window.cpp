@@ -30,7 +30,11 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	start_button = new QPushButton("Start", this);
 	start_button->setGeometry(10, 65, 70, 30);
 
+	refresh_button = new QPushButton("Refresh", this);
+	refresh_button->setGeometry(80, 65, 98, 30);
+
 	connect(start_button, SIGNAL (clicked()), this, SLOT (startTiming()));
+	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 }
 
 void Window::addWin(QString winTitle) {
@@ -50,6 +54,7 @@ void Window::startTiming() {
 	baseText = "\"" + winName + "\"" + " has been focused for ";
 	information->setText(baseText);
 	start_button->hide();
+	refresh_button->hide();
 	selection->hide();
 	focTimeLabel->show();
 	focTimeLabel->setStyleSheet("font-weight: bold");
@@ -75,4 +80,28 @@ void Window::timerCheck() {
 	string focTime;
 	tconvert(time, focTime);
 	focTimeLabel->setText(QString::fromStdString(focTime));
+}
+
+BOOL CALLBACK secondListWins(HWND hWnd, LPARAM lparam);
+/*BOOL CALLBACK Window::cecondListWins(HWND hWnd, LPARAM lparam) {
+	return TRUE;
+};*/
+
+void Window::updateList() {
+	idList.clear();
+	selection->clear();
+	EnumWindows(secondListWins, (LPARAM)this); // mr. gates, why do you haveto hurt me like this?
+}
+
+BOOL CALLBACK secondListWins(HWND hWnd, LPARAM lparam) {
+	int length = GetWindowTextLength(hWnd);
+	wchar_t title[length + 1];
+	GetWindowText(hWnd, title, length + 1);
+	Window *winpoint = (Window*)lparam;
+	if(IsWindowVisible(hWnd) && length != 0) {
+		QString titleStr = QString::fromWCharArray(title, length + 1);
+		winpoint->addWin(titleStr);
+		winpoint->idList.push_back(hWnd);
+	}
+	return TRUE;
 }
