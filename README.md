@@ -1,4 +1,6 @@
-# winfoc v0.8.1
+# winfoc v?
+
+**WARNING, THIS PROJECT IS UNDERGOING LOTS OF CHANGE. THE SOURCE CODE IS CURRENTLY BROKEN, BUT THE EXECUTABLE IS OF A WORKING VERSION**
 
 Welcome to **winfoc**, an open source program to track how long a window has been focused for.
 

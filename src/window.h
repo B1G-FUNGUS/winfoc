@@ -1,8 +1,8 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget>
-#include <windows.h>
+#include <QWidget> // is this necessary?
+// #include <windows.h>
 #include <vector>
 using namespace std;
 
@@ -13,16 +13,13 @@ class QLabel;
 class Window: public QWidget {
 	Q_OBJECT
 	public:
-		vector<HWND> idList;
-		explicit Window(QWidget *parent = 0);
-		void addWin(QString winTitle);
-		void addID(vector<HWND> ids);
-		static void makeWin();
+		static void createStaticWin();
 	private:
 		int time;
-		HWND id;
-		DWORD realID;
-		QString baseText;
+		/*HWND id;
+		DWORD realID; */
+		// QString baseText;
+		static Window *statWin;
 		QLabel *information;
 		QLabel *focTimeLabel;
 		QPushButton *start_button;
@@ -31,9 +28,8 @@ class Window: public QWidget {
 		// BOOL CALLBACK cecondListWins(HWND hWnd, LPARAM lparam);
 	private slots:
 		void startTiming();
-		void timerCheck();
+		// void timerCheck();
 		void updateList();
 };
-Window *myWin;
 
 #endif 

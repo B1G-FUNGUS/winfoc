@@ -1,6 +1,5 @@
 #include "window.h"
 #include "tconvert.h"
-#include "log.h"
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
@@ -14,8 +13,6 @@
 using namespace std;
 
 Window::Window(QWidget *parent): QWidget(parent) {
-	time = 0;
-
 	setFixedSize(500, 105);
 
 	information = new QLabel("Pick the window you want to track.", this);
@@ -38,12 +35,9 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 }
 
-static void makeWin() {
-	// Window *myWin = new Window;
-	int a = 1;
+static void createStaticWin() {
+	statWin = new Window();
 }
-
-// Window *myWin;
 
 void Window::addWin(QString winTitle) {
 	selection->addItem(winTitle);	
