@@ -17,6 +17,7 @@ class Window: public QWidget {
 		explicit Window(QWidget *parent = 0);
 		void addWin(QString winTitle);
 		void addID(vector<HWND> ids);
+		static void makeWin();
 	private:
 		int time;
 		HWND id;
@@ -33,5 +34,6 @@ class Window: public QWidget {
 		void timerCheck();
 		void updateList();
 };
+Window *myWin;
 
 #endif 

@@ -1,5 +1,6 @@
 #include "window.h"
 #include "tconvert.h"
+#include "log.h"
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
@@ -37,12 +38,34 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 }
 
+static void makeWin() {
+	// Window *myWin = new Window;
+	int a = 1;
+}
+
+// Window *myWin;
+
 void Window::addWin(QString winTitle) {
 	selection->addItem(winTitle);	
 }
 
 void Window::addID(vector<HWND> ids) {
 	idList = ids;
+}
+
+LRESULT CALLBACK focChange(int nCode, WPARAM wParam, LPARAM lParam) {
+	if(nCode == HCBT_SETFOCUS) {
+		/*
+		if((DWORD)wParam == realID) {
+			sTime = timeSinceEpoch()
+		}
+		if((DWORD)lParam == realID) {
+			eTime = timeSInceEpoch() - sTime;
+			addToClock(eTime);
+		}*/
+		myWin->addWin("balls"); // test func
+	}
+	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 void Window::startTiming() {
@@ -60,10 +83,11 @@ void Window::startTiming() {
 	focTimeLabel->setStyleSheet("font-weight: bold");
 	id = idList[selection->currentIndex()];
 	realID = GetWindowThreadProcessId(id, NULL);
-	QTimer *timer = new QTimer(this);
+	SetWindowsHookExA(WH_CBT, focChange, NULL, NULL); // new timer
+	/*QTimer *timer = new QTimer(this);
 	connect(timer, &QTimer::timeout, this, 
 		QOverload<>::of(&timerCheck));
-	timer->start(1000);
+	timer->start(1000);*/
 }
 
 void Window::timerCheck() {
