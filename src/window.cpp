@@ -3,10 +3,9 @@
 #include <QString>
 #include <QLabel>
 #include <QRect>
-#include <QTimer>
 #include <string>
 #include <vector>
-#include <wstring>
+#include <string>
 #include <windows.h>
 #include "window.h"
 #include "tconvert.h"
@@ -27,10 +26,7 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	selection = new QComboBox(this);
 	selection->setGeometry(10, 30, 270, 30);
 	Minterface::setLists(titleList, hWndList);
-	Minterface::updateWins();
-	for(int i = 0; i < titleList.size(); i++) {
-		selection->addItem(QString::fromStdWString(titleList[i]);
-	}
+	this->updateList();
 
 	start_button = new QPushButton("Start", this);
 	start_button->setGeometry(10, 65, 70, 30);
@@ -42,18 +38,20 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 }
 
-static void createStatWin() {
+void Window::createStatWin() {
 	statWin = new Window();
 }
 
-static void updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
-	// may cause minor error if window is already focused
+void Window::updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
+	//TODO may cause minor error if window is already focused
 	if(becomesFoc) {
 		focStartTime = Minterface::getTime();
 	}
-	if becomesUnfoc {
+	if(becomesUnfoc) {
 		ellapsedTime += Minterface::getTime() - focStartTime;
-		statWin->focTimeLabel->setText(tconvert(ellapsedTime));
+		string tstring;
+		tconvert(ellapsedTime, tstring);
+		statWin->focTimeLabel->setText(QString::fromStdString(tstring));
 	}
 }
 
@@ -71,9 +69,9 @@ void Window::startTiming() {
 	selection->hide();
 	focTimeLabel->show();
 
-	winId = hWndList[selection->currentIndex()];
+	winId = hWndList->at(selection->currentIndex());
 	ellapsedTime = 0;
-	focStarTime = Minterface::getTime();
+	focStartTime = Minterface::getTime();
 	Minterface::startChecker(winId, &updateStatWinTime);
 	// realID = GetWindowThreadProcessId(id, NULL);
 }
@@ -81,7 +79,7 @@ void Window::startTiming() {
 void Window::updateList() {
 	selection->clear();
 	Minterface::updateWins();
-	for(int i = 0; i < titleList.size(); i++) {
-		selection->addItem(QString::fromStdWString(titleList[i]);
+	for(int i = 0; i < titleList->size(); i++) {
+		selection->addItem(QString::fromStdWString(titleList->at(i)));
 	}
 }

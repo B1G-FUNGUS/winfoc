@@ -2,8 +2,8 @@
 #define MINTERFACE_H
 
 #include <vector>
-#include <wstring>
-#include <functional>
+#include <string>
+// #include <functional>
 #include <windows.h>
 using namespace std;
 
@@ -16,13 +16,13 @@ class Minterface {
 			vector<HWND> *idList);	
 		static void updateWins();
 		static void startChecker(HWND hWnd, 
-			function<void(bool, bool)> *aCheckFunc);
+			void (*inFunc)(bool, bool));
 		static long getTime();
 	private:
 		static BOOL CALLBACK winToList(HWND hWnd, LPARAM lParam);
 		static LRESULT CALLBACK focCheck(int nCode, WPARAM wParam, 
 			LPARAM lParam);
-		static function<void(bool, bool)> *checkFunc;
-}
+		static void (*checkFunc)(bool,bool);
+};
 
 #endif

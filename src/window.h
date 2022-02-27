@@ -3,7 +3,7 @@
 
 #include <QWidget> // is this necessary?
 #include <vector>
-#include <wstring>
+#include <string>
 #include <windows.h>
 using namespace std;
 
@@ -14,6 +14,9 @@ class Window: public QWidget {
 	Q_OBJECT
 	public:
 		static void createStatWin();
+		explicit Window(QWidget *parent = 0); //TODO could be private
+		static void updateStatWinTime(bool becomesFoc, 
+			bool becomesUnfoc);
 	private:
 		static long focStartTime;
 		static int ellapsedTime;
