@@ -2,33 +2,32 @@
 #define WINDOW_H
 
 #include <QWidget> // is this necessary?
-// #include <windows.h>
 #include <vector>
+#include <wstring>
+#include <windows.h>
 using namespace std;
 
 class QPushButton;
 class QComboBox;
-class QString;
 class QLabel;
 class Window: public QWidget {
 	Q_OBJECT
 	public:
-		static void createStaticWin();
+		static void createStatWin();
 	private:
-		int time;
-		/*HWND id;
-		DWORD realID; */
-		// QString baseText;
+		static long focStartTime;
+		static int ellapsedTime;
+		HWND winId;
+		vector<wstring> *titleList;
+		vector<HWND> *hWndList;
 		static Window *statWin;
 		QLabel *information;
-		QLabel *focTimeLabel;
 		QPushButton *start_button;
 		QPushButton *refresh_button;
 		QComboBox *selection;
-		// BOOL CALLBACK cecondListWins(HWND hWnd, LPARAM lparam);
+		QLabel *focTimeLabel;
 	private slots:
 		void startTiming();
-		// void timerCheck();
 		void updateList();
 };
 

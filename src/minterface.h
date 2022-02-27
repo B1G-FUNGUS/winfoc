@@ -14,10 +14,9 @@ class Minterface {
 		static HWND idToCheck;
 		static void setLists(vector<wstring> *strList, 
 			vector<HWND> *idList);	
-		static void addWins();
+		static void updateWins();
 		static void startChecker(HWND hWnd, 
 			function<void(bool, bool)> *aCheckFunc);
-		static void setIdToCheck(HWND hWnd);
 		static long getTime();
 	private:
 		static BOOL CALLBACK winToList(HWND hWnd, LPARAM lParam);

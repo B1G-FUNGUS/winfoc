@@ -20,7 +20,7 @@ static BOOL CALLBACK Minterface::winToList(HWND hWnd, LPARAM lParam) {
 	return TRUE;
 }
 
-static void Minterface::addWins() {
+static void Minterface::updateWins() {
 	winStrList.clear();
 	winIdList.clear();
 	EnumWindows(winToList, NULL);
@@ -38,11 +38,8 @@ static LRESULT CALLBACK focCheck(int nCode, WPARAM, wParam, LPARAM lParam) {
 
 static void startChecker(HWND hWn, function<void(bool, bool)> *aCheckFunc) {
 	checkFunc = aCheckFunc;
-	HHOOK SetWindowsHookExA(WH_CBT, focCheck, NULL, NULL);
-}
-
-static void setIdToCheck(HWND hWnd) {
 	idToCheck = hWnd;
+	HHOOK SetWindowsHookExA(WH_CBT, focCheck, NULL, NULL);
 }
 
 static int getTime() {

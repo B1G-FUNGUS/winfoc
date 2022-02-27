@@ -1,15 +1,16 @@
-#include "window.h"
-#include "tconvert.h"
 #include <QPushButton>
 #include <QComboBox>
 #include <QString>
 #include <QLabel>
 #include <QRect>
-#include <vector>
-#include <windows.h>
 #include <QTimer>
 #include <string>
-
+#include <vector>
+#include <wstring>
+#include <windows.h>
+#include "window.h"
+#include "tconvert.h"
+#include "minterface.h"
 using namespace std;
 
 Window::Window(QWidget *parent): QWidget(parent) {
@@ -20,10 +21,16 @@ Window::Window(QWidget *parent): QWidget(parent) {
 
 	focTimeLabel = new QLabel(this);
 	focTimeLabel->setGeometry(QRect(10, 30, 480, 20));
+	focTimeLabel->setStyleSheet("font-weight: bold");
 	focTimeLabel->hide();
 
 	selection = new QComboBox(this);
 	selection->setGeometry(10, 30, 270, 30);
+	Minterface::setLists(titleList, hWndList);
+	Minterface::updateWins();
+	for(int i = 0; i < titleList.size(); i++) {
+		selection->addItem(QString::fromStdWString(titleList[i]);
+	}
 
 	start_button = new QPushButton("Start", this);
 	start_button->setGeometry(10, 65, 70, 30);
@@ -35,31 +42,19 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 }
 
-static void createStaticWin() {
+static void createStatWin() {
 	statWin = new Window();
 }
 
-void Window::addWin(QString winTitle) {
-	selection->addItem(winTitle);	
-}
-
-void Window::addID(vector<HWND> ids) {
-	idList = ids;
-}
-
-LRESULT CALLBACK focChange(int nCode, WPARAM wParam, LPARAM lParam) {
-	if(nCode == HCBT_SETFOCUS) {
-		/*
-		if((DWORD)wParam == realID) {
-			sTime = timeSinceEpoch()
-		}
-		if((DWORD)lParam == realID) {
-			eTime = timeSInceEpoch() - sTime;
-			addToClock(eTime);
-		}*/
-		myWin->addWin("balls"); // test func
+static void updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
+	// may cause minor error if window is already focused
+	if(becomesFoc) {
+		focStartTime = Minterface::getTime();
 	}
-	return CallNextHookEx(NULL, nCode, wParam, lParam);
+	if becomesUnfoc {
+		ellapsedTime += Minterface::getTime() - focStartTime;
+		statWin->focTimeLabel->setText(tconvert(ellapsedTime));
+	}
 }
 
 void Window::startTiming() {
@@ -68,58 +63,25 @@ void Window::startTiming() {
 		winName.truncate(22);
 		winName.append("...");
 	}
-	baseText = "\"" + winName + "\"" + " has been focused for ";
-	information->setText(baseText);
+	
+	information->setText("\"" + winName + "\"" + " has been focused for ");
+
 	start_button->hide();
 	refresh_button->hide();
 	selection->hide();
 	focTimeLabel->show();
-	focTimeLabel->setStyleSheet("font-weight: bold");
-	id = idList[selection->currentIndex()];
-	realID = GetWindowThreadProcessId(id, NULL);
-	SetWindowsHookExA(WH_CBT, focChange, NULL, NULL); // new timer
-	/*QTimer *timer = new QTimer(this);
-	connect(timer, &QTimer::timeout, this, 
-		QOverload<>::of(&timerCheck));
-	timer->start(1000);*/
-}
 
-void Window::timerCheck() {
-	DWORD otherAID; // WHY DOES THIS MAKE THE PROGRAM WORK??
-	DWORD activeID = GetWindowThreadProcessId(GetForegroundWindow(), &otherAID);
-	if(realID == activeID) { 
-		time += 1;
-	}
-	/*QString real = QString::number(realID);
-	QString active = QString::number(otherAID);
-	// QString secs = QString::number(time);
-	// information->setText(baseText + secs + " seconds");
-	// information->setText(real + " | " + active + " | " + secs);*/
-	string focTime;
-	tconvert(time, focTime);
-	focTimeLabel->setText(QString::fromStdString(focTime));
+	winId = hWndList[selection->currentIndex()];
+	ellapsedTime = 0;
+	focStarTime = Minterface::getTime();
+	Minterface::startChecker(winId, &updateStatWinTime);
+	// realID = GetWindowThreadProcessId(id, NULL);
 }
-
-BOOL CALLBACK secondListWins(HWND hWnd, LPARAM lparam);
-/*BOOL CALLBACK Window::cecondListWins(HWND hWnd, LPARAM lparam) {
-	return TRUE;
-};*/
 
 void Window::updateList() {
-	idList.clear();
 	selection->clear();
-	EnumWindows(secondListWins, (LPARAM)this); // mr. gates, why do you haveto hurt me like this?
-}
-
-BOOL CALLBACK secondListWins(HWND hWnd, LPARAM lparam) {
-	int length = GetWindowTextLength(hWnd);
-	wchar_t title[length + 1];
-	GetWindowText(hWnd, title, length + 1);
-	Window *winpoint = (Window*)lparam;
-	if(IsWindowVisible(hWnd) && length != 0) {
-		QString titleStr = QString::fromWCharArray(title, length + 1);
-		winpoint->addWin(titleStr);
-		winpoint->idList.push_back(hWnd);
+	Minterface::updateWins();
+	for(int i = 0; i < titleList.size(); i++) {
+		selection->addItem(QString::fromStdWString(titleList[i]);
 	}
-	return TRUE;
 }
