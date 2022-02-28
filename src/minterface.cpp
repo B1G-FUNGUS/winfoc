@@ -6,6 +6,11 @@
 #include "minterface.h"
 using namespace std;
 
+vector<wstring> *Minterface::winStrList;
+vector<HWND> *Minterface::winIdList;
+HWND Minterface::idToCheck;
+function<void(bool,bool)> Minterface::checkFunc;
+
 void Minterface::setLists(vector<wstring> *strList, vector<HWND> *idList) {
 	winStrList = strList;
 	winIdList = idList;
@@ -40,14 +45,14 @@ LRESULT CALLBACK Minterface::focCheck(int nCode, WPARAM wParam, LPARAM lParam) {
 	return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
-void Minterface::startChecker(HWND hWnd, void (*inFunc)(bool,bool)) {
+void Minterface::startChecker(HWND hWnd, function<void(bool,bool)> inFunc) {
 	checkFunc = inFunc;
 	idToCheck = hWnd;
 	SetWindowsHookExA(WH_CBT, focCheck, NULL, NULL);
 }
 
-long Minterface::getTime() {
+/*long Minterface::getTime() {
 	LARGE_INTEGER *time;
 	NtQuerySystemTime(time);
 	return (long)time;
-}
+}*/

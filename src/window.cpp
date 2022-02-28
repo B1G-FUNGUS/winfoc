@@ -6,11 +6,17 @@
 #include <string>
 #include <vector>
 #include <string>
+// #include <chrono>
+#include <ctime>
 #include <windows.h>
 #include "window.h"
 #include "tconvert.h"
 #include "minterface.h"
 using namespace std;
+
+int Window::ellapsedTime;
+long Window::focStartTime;
+Window *Window::statWin;
 
 Window::Window(QWidget *parent): QWidget(parent) {
 	setFixedSize(500, 105);
@@ -36,19 +42,22 @@ Window::Window(QWidget *parent): QWidget(parent) {
 
 	connect(start_button, SIGNAL (clicked()), this, SLOT (startTiming()));
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
+
+	this->show();
 }
 
 void Window::createStatWin() {
-	statWin = new Window();
+	statWin = new Window;
 }
 
 void Window::updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
 	//TODO may cause minor error if window is already focused
 	if(becomesFoc) {
-		focStartTime = Minterface::getTime();
+		// focStartTime = Minterface::getTime();
+		focStartTime = (long)time(0);
 	}
 	if(becomesUnfoc) {
-		ellapsedTime += Minterface::getTime() - focStartTime;
+		ellapsedTime += (long)time(0) - focStartTime;
 		string tstring;
 		tconvert(ellapsedTime, tstring);
 		statWin->focTimeLabel->setText(QString::fromStdString(tstring));
@@ -68,10 +77,10 @@ void Window::startTiming() {
 	refresh_button->hide();
 	selection->hide();
 	focTimeLabel->show();
-
+	
 	winId = hWndList->at(selection->currentIndex());
 	ellapsedTime = 0;
-	focStartTime = Minterface::getTime();
+	focStartTime = (long)time(0);
 	Minterface::startChecker(winId, &updateStatWinTime);
 	// realID = GetWindowThreadProcessId(id, NULL);
 }
