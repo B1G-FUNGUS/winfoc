@@ -21,7 +21,7 @@ class Window: public QWidget {
 		static long focStartTime;
 		static int ellapsedTime;
 		HWND winId;
-		vector<wstring> *titleList;
+		vector<wchar_t*> *titleList;
 		vector<HWND> *hWndList;
 		static Window *statWin;
 		QLabel *information;

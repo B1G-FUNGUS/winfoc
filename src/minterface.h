@@ -9,10 +9,10 @@ using namespace std;
 
 class Minterface {
 	public:
-		static vector<wstring> *winStrList;
+		static vector<wchar_t*> *winStrList;
 		static vector<HWND> *winIdList;
 		static HWND idToCheck;
-		static void setLists(vector<wstring> *strList, 
+		static void setLists(vector<wchar_t*> *strList, 
 			vector<HWND> *idList);	
 		static void updateWins();
 		static void startChecker(HWND hWnd, 
