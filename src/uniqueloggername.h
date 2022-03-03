@@ -1,10 +1,10 @@
 #ifndef UNIQUELOGGERNAME_H
 #define UNIQUELOGGERNAME_H
 
-#include <fstream>
 #include <string>
 using namespace std;
 
-void logOut(string text);
+void logOut(string text); //TODO use templates
+void logOut(wchar_t* text);
 
 #endif

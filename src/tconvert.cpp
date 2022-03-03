@@ -1,14 +1,12 @@
 #include "tconvert.h"
-#include <iostream>
 #include <string>
 using namespace std;
 
-string &tconvert(int secs, string &outString) {
+bool tconvert(int secs, string &outString) {
 	int mins = 0, hours = 0, days = 0;
-	if(secs >= 2147483647) exit(1); // prevent 32 bit overflow errors
-	string mtime = "";
+	if(secs > sizeof(int)) return false;
 
-	mtime = to_string(secs % 60) + "s" + mtime;
+	string mtime = to_string(secs % 60) + "s"; //TODO better way to do this? MB with format strings?
 	if(secs >= 60) {
 		mins = secs / 60;
 		mtime = to_string(mins % 60) + "m " + mtime;
@@ -23,5 +21,5 @@ string &tconvert(int secs, string &outString) {
 	}
 
 	outString = mtime;
-	return outString;
+	return true;
 }

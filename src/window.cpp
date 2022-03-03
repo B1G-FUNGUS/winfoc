@@ -3,16 +3,15 @@
 #include <QString>
 #include <QLabel>
 #include <QRect>
-#include <string>
 #include <vector>
+#include <utility>
 #include <string>
 #include <ctime>
 #include <windows.h>
 #include "window.h"
 #include "tconvert.h"
 #include "minterface.h"
-// #include "log.h"
-#include "uniqueloggername.h"
+#include "mymacros.h"
 using namespace std;
 
 int Window::ellapsedTime;
@@ -20,8 +19,6 @@ long Window::focStartTime;
 Window *Window::statWin;
 
 Window::Window(QWidget *parent): QWidget(parent) {
-	logOut("Before Window Constructor\n");
-
 	setFixedSize(500, 105);
 
 	information = new QLabel("Pick the window you want to track.", this);
@@ -34,11 +31,7 @@ Window::Window(QWidget *parent): QWidget(parent) {
 
 	selection = new QComboBox(this);
 	selection->setGeometry(10, 30, 270, 30);
-	titleList = new vector<wchar_t*>;
-	hWndList = new vector<HWND>;
-	logOut("Before setting lists");
-	Minterface::setLists(titleList, hWndList);
-	logOut("Before updating lists");
+	WINLIST winList; //TODO initialize?
 	this->updateList();
 
 	start_button = new QPushButton("Start", this);
@@ -51,39 +44,32 @@ Window::Window(QWidget *parent): QWidget(parent) {
 	connect(refresh_button, SIGNAL (clicked()), this, SLOT (updateList()));
 
 	this->show();
-	logOut("After Window Constructor\n");
 }
 
 void Window::createStatWin() {
-	logOut("Before Stat Win Creation\n");
 	statWin = new Window;
-	logOut("After Stat Win Creation\n");
 }
 
 void Window::updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
-	logOut("Before time update\n");
-	//TODO may cause minor error if window is already focused
+	//TODO should not cause error if window is already focused, but we shall see
 	if(becomesFoc) {
-		// focStartTime = Minterface::getTime();
-		focStartTime = (long)time(0);
+		focStartTime = (long)time(0); //TODO casting
 	}
 	if(becomesUnfoc) {
-		ellapsedTime += (long)time(0) - focStartTime;
+		ellapsedTime += (long)time(0) - focStartTime; //TODO casting
 		string tstring;
-		tconvert(ellapsedTime, tstring);
-		statWin->focTimeLabel->setText(QString::fromStdString(tstring));
+		if(tconvert(ellapsedTime, tstring)) {
+			statWin->focTimeLabel->setText(QString::fromStdString(tstring));
+		} else statWin->focTimeLabel->setText("OVERFLOW ERROR!");
 	}
-	logOut("After time update\n");
 }
 
 void Window::startTiming() {
-	logOut("Before timing start\n");
 	QString winName = selection->currentText();
 	if(winName.length() > 25) {
 		winName.truncate(22);
 		winName.append("...");
 	}
-	
 	information->setText("\"" + winName + "\"" + " has been focused for ");
 
 	start_button->hide();
@@ -91,20 +77,16 @@ void Window::startTiming() {
 	selection->hide();
 	focTimeLabel->show();
 	
-	winId = hWndList->at(selection->currentIndex());
+	winId = winList.at(selection->currentIndex()).first;
 	ellapsedTime = 0;
-	focStartTime = (long)time(0);
-	Minterface::startChecker(winId, &updateStatWinTime);
-	// realID = GetWindowThreadProcessId(id, NULL);
-	logOut("After timing start\n");
+	focStartTime = (long)time(0); //TODO should prevent error
+	Minterface::startChecker(winId, &updateStatWinTime); //TODO error with checking HWND's instead of thread ids? //TODO do you pass addresses for pointer args?
 }
 
 void Window::updateList() {
-	logOut("Before list update\n");
 	selection->clear();
-	Minterface::updateWins();
-	for(int i = 0; i < titleList->size(); i++) {
-		selection->addItem(QString::fromWCharArray(titleList->at(i)));
+	Minterface::updateWins(&winList);
+	for(unsigned int i = 0; i < winList.size(); i++) {
+		selection->addItem(QString::fromWCharArray(winList.at(i).second));
 	}
-	logOut("After list update\n");
 }

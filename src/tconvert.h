@@ -4,6 +4,6 @@
 #include <string>
 using namespace std;
 
-string &tconvert(int secs, string &outString);
+bool tconvert(int secs, string &outString);
 
 #endif
