@@ -1,5 +1,5 @@
-#include <QPushButton>
-#include <QComboBox>
+#include <QPushButton> //TODO Tons of dependencies
+#include <QComboBox> //TODO notice how we don't have to include QWidget, I am being dumb
 #include <QString>
 #include <QLabel>
 #include <QRect>
@@ -7,13 +7,15 @@
 #include <utility>
 #include <string>
 #include <ctime>
-#include <windows.h>
+#include <windows.h> //TODO move dependent functions to minterface (or main)
 #include "window.h"
 #include "tconvert.h"
-#include "minterface.h"
+#include "minterface.h" //TODO move to main
 #include "mymacros.h"
 using namespace std;
 
+bool Window::wasFoc; //TODO move variables and 'organs' to main, just have
+// this class be the 'skin'
 int Window::ellapsedTime;
 long Window::focStartTime;
 Window *Window::statWin;
@@ -31,7 +33,7 @@ Window::Window(QWidget *parent): QWidget(parent) {
 
 	selection = new QComboBox(this);
 	selection->setGeometry(10, 30, 270, 30);
-	WINLIST winList; //TODO initialize?
+	WINLIST winList; 
 	this->updateList();
 
 	start_button = new QPushButton("Start", this);
@@ -50,17 +52,17 @@ void Window::createStatWin() {
 	statWin = new Window;
 }
 
-void Window::updateStatWinTime(bool becomesFoc, bool becomesUnfoc) {
-	//TODO should not cause error if window is already focused, but we shall see
-	if(becomesFoc) {
+void Window::updateStatWinTime(bool foc) {
+	//TODO look for unexpected errors
+	if(foc) {
+		wasFoc = true;
 		focStartTime = (long)time(0); //TODO casting
-	}
-	if(becomesUnfoc) {
+	} else if (wasFoc) {
 		ellapsedTime += (long)time(0) - focStartTime; //TODO casting
 		string tstring;
-		if(tconvert(ellapsedTime, tstring)) {
-			statWin->focTimeLabel->setText(QString::fromStdString(tstring));
-		} else statWin->focTimeLabel->setText("OVERFLOW ERROR!");
+		tconvert(ellapsedTime, tstring);
+		statWin->focTimeLabel->setText(QString::fromStdString(tstring));
+		wasFoc = false;
 	}
 }
 
@@ -79,8 +81,9 @@ void Window::startTiming() {
 	
 	winId = winList.at(selection->currentIndex()).first;
 	ellapsedTime = 0;
-	focStartTime = (long)time(0); //TODO should prevent error
-	Minterface::startChecker(winId, &updateStatWinTime); //TODO error with checking HWND's instead of thread ids? //TODO do you pass addresses for pointer args?
+	wasFoc = (GetActiveWindow() == winId); 
+	focStartTime = (long)time(0); //TODO should prevent error?
+	Minterface::startChecker(winId, &updateStatWinTime); 
 }
 
 void Window::updateList() {

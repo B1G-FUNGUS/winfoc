@@ -7,35 +7,36 @@
 using namespace std;
 
 HWND Minterface::idToCheck;
-function<void(bool,bool)> Minterface::checkFunc;
+function<void(bool)> Minterface::checkFunc;
 
 BOOL CALLBACK Minterface::winToList(HWND hWnd, LPARAM lParam) {
-	WINLIST *winList = reinterpret_cast<WINLIST*>(lParam); //TODO look out for casting errors
+	WINLIST *winList = reinterpret_cast<WINLIST*>(lParam); //TODO casting
 	int length = GetWindowTextLength(hWnd);
 	if(length != 0 && IsWindowVisible(hWnd) == TRUE) {
 		winList->push_back(make_pair(hWnd, new wchar_t[length + 1]));
-		GetWindowText(hWnd, winList->at(winList->size() - 1).second, length + 1); //TODO look out for memory errors or other issue
+		GetWindowText(hWnd, winList->at(winList->size() - 1).second, 
+			length + 1); //TODO memory issue?
 	}
 	return TRUE;
 }
 
 void Minterface::updateWins(WINLIST *winList) {
 	winList->clear();
-	EnumWindows(winToList, reinterpret_cast<LPARAM>(winList)); //TODO look out for casting errors
+	EnumWindows(winToList, reinterpret_cast<LPARAM>(winList)); //TODO casting
 }
 
-LRESULT CALLBACK Minterface::focCheck(int nCode, WPARAM wParam, LPARAM lParam) {
-	bool foc = false, unfoc = false;
-	if(nCode == HCBT_SETFOCUS) {
-		if((HWND)wParam == idToCheck) foc = true; //TODO look out for casting errors
-		if((HWND)lParam == idToCheck) unfoc = true; //TODO look out for casting errors
-	}
-	checkFunc(foc, unfoc);
-	return CallNextHookEx(NULL, nCode, wParam, lParam);
+void CALLBACK Minterface::winFocChange(HWINEVENTHOOK hook, DWORD event, HWND hWnd, LONG objId, LONG childId, DWORD eventThread, DWORD eventTime)
+{
+	// Note that event time is not passed as an argument because using the
+	// standard time function instead makes future compatibility easier
+	checkFunc((hWnd == idToCheck));
 }
 
-void Minterface::startChecker(HWND hWnd, function<void(bool,bool)> inFunc) {
+void Minterface::startChecker(HWND hWnd, function<void(bool)> inFunc) {
 	checkFunc = inFunc;
 	idToCheck = hWnd;
-	SetWindowsHookExA(WH_CBT, focCheck, NULL, NULL);
+	HWINEVENTHOOK hook = SetWinEventHook(
+		EVENT_OBJECT_FOCUS, EVENT_OBJECT_FOCUS, NULL, 
+		&Minterface::winFocChange, 0, 0, 
+		WINEVENT_OUTOFCONTEXT); //TODO double spew error
 }

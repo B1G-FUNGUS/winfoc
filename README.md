@@ -1,6 +1,4 @@
-# winfoc v?
-
-**WARNING, THIS PROJECT IS UNDERGOING LOTS OF CHANGE. THE SOURCE CODE IS CURRENTLY BROKEN, BUT THE EXECUTABLE IS OF A WORKING VERSION**
+# winfoc v1.0
 
 Welcome to **winfoc**, an open source program to track how long a window has been focused for.
 
@@ -10,7 +8,7 @@ It should work with Windows 7 or above.
 The source code can be found in the "src" folder.
 If you are on Windows, you can use the Qt IDE to compile the code.
 If you are on linux, you can use M Cross Environment (github.com/mxe/mxe) to compile it for Windows.
-You can find an in-depth tutorial on mxe.cc/#tutorial, but here are the basic steps:
+You can find an in-depth tutorial on [mxe.cc/#tutorial](mxe.cc/#tutorial), but here are the basic steps:
 
 1. Clone the repository with `git clone github.com/mxe/mxe`
 2. Go into the directory with `cd mxe`

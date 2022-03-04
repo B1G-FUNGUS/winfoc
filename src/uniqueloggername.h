@@ -4,7 +4,9 @@
 #include <string>
 using namespace std;
 
-void logOut(string text); //TODO use templates
+//TODO use templates
+
+void logOut(string text); 
 void logOut(wchar_t* text);
 
 #endif

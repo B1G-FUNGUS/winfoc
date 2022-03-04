@@ -1,7 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget> //TODO necessary?
+#include <QWidget>
 #include <vector>
 #include <string>
 #include <windows.h>
@@ -16,9 +16,9 @@ class Window: public QWidget {
 	public:
 		static void createStatWin();
 		explicit Window(QWidget *parent = 0); //TODO could be private
-		static void updateStatWinTime(bool becomesFoc, //TODO could be private
-			bool becomesUnfoc);
+		static void updateStatWinTime(bool foc); //TODO could be private	
 	private:
+		static bool wasFoc;
 		static long focStartTime;
 		static int ellapsedTime;
 		HWND winId;

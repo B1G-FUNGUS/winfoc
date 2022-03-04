@@ -1,8 +1,10 @@
 #include <fstream>
 #include <string>
-#include <codecvt>
+#include <codecvt> 
 #include "uniqueloggername.h"
 using namespace std;
+
+//TODO in general I feel like this could be made better, but I'm not sure how
 
 void logOut(string text) {
 	ofstream logStream;
@@ -14,8 +16,8 @@ void logOut(string text) {
 void logOut(wchar_t* text) {
 	wofstream logStream;
 	logStream.open("log.txt", wofstream::app);
-	std::locale loc(std::locale::classic(), new std::codecvt_utf8<wchar_t>);
-	logStream.imbue(loc);
+	std::locale locale(locale::classic(), new codecvt_utf8<wchar_t>);
+	logStream.imbue(locale);
 	logStream << text;
 	logStream.close();
 }
